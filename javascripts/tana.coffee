@@ -1,25 +1,36 @@
 class Tana
   constructor: (@prices) ->
 
-  SMA: (n=5) ->
-    unless 1 <= n <= @prices.length
-      return (NaN for i in [1..@prices.length])
+  SMA: (peroid=5) ->
+    unless 1 <= peroid <= @prices.length
+      return undefined
 
     sma = []
-    sma.push NaN for i in [0...n-1]
+    sma.push undefined for i in [0...peroid-1]
 
     avg = 0
-    avg += @prices[i] for i in [0...n]
-    avg /= n
+    avg += @prices[i] for i in [0...peroid]
+    avg /= peroid
     sma.push avg
     
-    for i in [n...@prices.length]
-      sma.push avg += (@prices[i] - @prices[i-n]) / n
-
+    for i in [peroid...@prices.length]
+      avg += (@prices[i] - @prices[i-peroid]) / peroid
+      sma.push Math.round(avg * 1000) / 1000
     sma
+    
+  EMA: (peroid) ->
+    peroid = @prices.length if peroid is undefined
+    unless 1 <= peroid <= @prices.length
+      return undefined
 
-$ ->
-  test_prices = [0,1,2,3,4,5,6,7,8,9]
-  a = new Tana test_prices
-  console.log test_prices
-  console.log a.SMA(20)
+    ema = []
+    ema.push @prices[0]
+
+    alpha = 2 / (peroid + 1)
+
+    for i in [1...@prices.length]
+      ema.push ema[i-1] + alpha * (@prices[i] - ema[i-1])
+
+    Math.round(element * 1000) / 1000 for element in ema
+
+
