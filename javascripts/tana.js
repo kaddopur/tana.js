@@ -2,57 +2,78 @@
 var Tana;
 
 Tana = (function() {
-  function Tana(prices) {
-    this.prices = prices;
+  function Tana(di) {
+    this.di = di;
   }
 
-  Tana.prototype.SMA = function(peroid) {
-    var avg, i, sma, _i, _j, _k, _ref, _ref1;
-
-    if (peroid == null) {
-      peroid = 5;
-    }
-    if (!((1 <= peroid && peroid <= this.prices.length))) {
-      return void 0;
-    }
-    sma = [];
-    for (i = _i = 0, _ref = peroid - 1; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      sma.push(void 0);
-    }
-    avg = 0;
-    for (i = _j = 0; 0 <= peroid ? _j < peroid : _j > peroid; i = 0 <= peroid ? ++_j : --_j) {
-      avg += this.prices[i];
-    }
-    avg /= peroid;
-    sma.push(avg);
-    for (i = _k = peroid, _ref1 = this.prices.length; peroid <= _ref1 ? _k < _ref1 : _k > _ref1; i = peroid <= _ref1 ? ++_k : --_k) {
-      avg += (this.prices[i] - this.prices[i - peroid]) / peroid;
-      sma.push(Math.round(avg * 1000) / 1000);
-    }
-    return sma;
+  Tana.roundArray = function(list) {
+    return list.map(function(x) {
+      if (x != null) {
+        return Math.round(x * 100) / 100;
+      }
+    });
   };
 
-  Tana.prototype.EMA = function(peroid) {
-    var alpha, element, ema, i, _i, _j, _len, _ref, _results;
+  Tana.prototype.MA = function(period, target) {
+    var current_ma, i, ma, sum, _i, _j, _ref;
 
-    if (peroid === void 0) {
-      peroid = this.prices.length;
+    if (period == null) {
+      period = 20;
     }
-    if (!((1 <= peroid && peroid <= this.prices.length))) {
+    if (target == null) {
+      target = this.di;
+    }
+    if (!((1 <= period && period <= target.length))) {
       return void 0;
     }
+    ma = [];
+    for (i = _i = 1; 1 <= period ? _i < period : _i > period; i = 1 <= period ? ++_i : --_i) {
+      ma.push(void 0);
+    }
+    sum = target.slice(0, period).reduce(function(a, e) {
+      return a + e;
+    });
+    current_ma = sum / period;
+    ma.push(current_ma);
+    for (i = _j = period, _ref = target.length; period <= _ref ? _j < _ref : _j > _ref; i = period <= _ref ? ++_j : --_j) {
+      ma.push(current_ma += (target[i] - target[i - period]) / period);
+    }
+    return Tana.roundArray(ma);
+  };
+
+  Tana.prototype.EMA = function(period, target) {
+    var alpha, current_ema, ema, i, sum, _i, _j, _ref;
+
+    if (period == null) {
+      period = 20;
+    }
+    if (target == null) {
+      target = this.di;
+    }
+    if (!((1 <= period && period <= target.length))) {
+      return void 0;
+    }
+    alpha = 2 / (period + 1);
     ema = [];
-    ema.push(this.prices[0]);
-    alpha = 2 / (peroid + 1);
-    for (i = _i = 1, _ref = this.prices.length; 1 <= _ref ? _i < _ref : _i > _ref; i = 1 <= _ref ? ++_i : --_i) {
-      ema.push(ema[i - 1] + alpha * (this.prices[i] - ema[i - 1]));
+    for (i = _i = 1; 1 <= period ? _i < period : _i > period; i = 1 <= period ? ++_i : --_i) {
+      ema.push(void 0);
     }
-    _results = [];
-    for (_j = 0, _len = ema.length; _j < _len; _j++) {
-      element = ema[_j];
-      _results.push(Math.round(element * 1000) / 1000);
+    sum = target.slice(0, period).reduce(function(a, e) {
+      return a + e;
+    });
+    current_ema = sum / period;
+    ema.push(current_ema);
+    for (i = _j = period, _ref = target.length; period <= _ref ? _j < _ref : _j > _ref; i = period <= _ref ? ++_j : --_j) {
+      ema.push(current_ema = ema[i - 1] + alpha * (target[i] - ema[i - 1]));
     }
-    return _results;
+    return Tana.roundArray(ema);
+  };
+
+  Tana.prototype.MACD = function(period) {
+    if (period == null) {
+      period = 20;
+    }
+    return void 0;
   };
 
   return Tana;

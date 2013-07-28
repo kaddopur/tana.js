@@ -1,36 +1,42 @@
 class Tana
-  constructor: (@prices) ->
+  constructor: (@di) ->
 
-  SMA: (peroid=5) ->
-    unless 1 <= peroid <= @prices.length
-      return undefined
+  @roundArray: (list) ->
+    list.map (x) -> Math.round(x * 100) / 100 if x?
 
-    sma = []
-    sma.push undefined for i in [0...peroid-1]
 
-    avg = 0
-    avg += @prices[i] for i in [0...peroid]
-    avg /= peroid
-    sma.push avg
+  MA: (period=20, target=@di) ->
+    return undefined unless 1 <= period <= target.length
+      
+    ma = []
+    ma.push undefined for i in [1...period]
+
+    sum = target.slice(0, period).reduce (a, e) -> a + e
+    current_ma = sum / period
+    ma.push current_ma
     
-    for i in [peroid...@prices.length]
-      avg += (@prices[i] - @prices[i-peroid]) / peroid
-      sma.push Math.round(avg * 1000) / 1000
-    sma
+    ma.push current_ma += (target[i] - target[i-period]) / period for i in [period...target.length]
+    Tana.roundArray(ma)
     
-  EMA: (peroid) ->
-    peroid = @prices.length if peroid is undefined
-    unless 1 <= peroid <= @prices.length
-      return undefined
+
+  EMA: (period=20, target=@di) ->
+    return undefined unless 1 <= period <= target.length
+    alpha = 2 / (period + 1)
 
     ema = []
-    ema.push @prices[0]
+    ema.push undefined for i in [1...period]
 
-    alpha = 2 / (peroid + 1)
+    sum = target.slice(0, period).reduce (a, e) -> a + e
+    current_ema = sum / period
+    ema.push current_ema
 
-    for i in [1...@prices.length]
-      ema.push ema[i-1] + alpha * (@prices[i] - ema[i-1])
+    ema.push current_ema = ema[i-1] + alpha * (target[i] - ema[i-1]) for i in [period...target.length]
+    Tana.roundArray(ema)
 
-    Math.round(element * 1000) / 1000 for element in ema
+
+  MACD: (period=20) ->
+    undefined
+
+  
 
 
