@@ -121,18 +121,34 @@ describe('Tana', function() {
       return expect(tana.MA).toBeDefined();
     });
     it('has default value { period: 20 }', function() {
-      return expect(tana.MA()).toEqual(tana.MA(20));
+      return expect(tana.MA()).toEqual(tana.MA({
+        period: 20
+      }));
     });
     it('answers with given period from 1 to LENGTH_OF_DI', function() {
-      expect(tana.MA(1)).toEqual(DI);
-      expect(tana.MA(5)).toEqual(MA5);
-      expect(tana.MA(10)).toEqual(MA10);
-      return expect(tana.MA(20)).toEqual(MA20);
+      expect(tana.MA({
+        period: 1
+      })).toEqual(DI);
+      expect(tana.MA({
+        period: 5
+      })).toEqual(MA5);
+      expect(tana.MA({
+        period: 10
+      })).toEqual(MA10);
+      return expect(tana.MA({
+        period: 20
+      })).toEqual(MA20);
     });
     return it('returns undefined when period is out of range', function() {
-      expect(tana.MA(-1)).toBeUndefined();
-      expect(tana.MA(0)).toBeUndefined();
-      return expect(tana.MA(100)).toBeUndefined();
+      expect(tana.MA({
+        period: -1
+      })).toBeUndefined();
+      expect(tana.MA({
+        period: 0
+      })).toBeUndefined();
+      return expect(tana.MA({
+        period: 100
+      })).toBeUndefined();
     });
   });
   describe('EMA', function() {

@@ -13,7 +13,12 @@ class Tana
     prefix.concat @EMA(argv)
 
 
-  MA: (period=20, target=@di, round=true) ->
+  MA: (argv) ->
+    argv = {period: 20, target: @di, round: true} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 20
+    target = if argv.hasOwnProperty('target') then argv.target else @di
+    round = if argv.hasOwnProperty('round') then argv.round else true
+
     return undefined unless 1 <= period <= target.length
       
     ma = []

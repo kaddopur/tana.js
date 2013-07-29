@@ -27,18 +27,19 @@ Tana = (function() {
     return prefix.concat(this.EMA(argv));
   };
 
-  Tana.prototype.MA = function(period, target, round) {
-    var current_ma, i, ma, sum, _i, _j, _ref;
+  Tana.prototype.MA = function(argv) {
+    var current_ma, i, ma, period, round, sum, target, _i, _j, _ref;
 
-    if (period == null) {
-      period = 20;
+    if (argv === void 0) {
+      argv = {
+        period: 20,
+        target: this.di,
+        round: true
+      };
     }
-    if (target == null) {
-      target = this.di;
-    }
-    if (round == null) {
-      round = true;
-    }
+    period = argv.hasOwnProperty('period') ? argv.period : 20;
+    target = argv.hasOwnProperty('target') ? argv.target : this.di;
+    round = argv.hasOwnProperty('round') ? argv.round : true;
     if (!((1 <= period && period <= target.length))) {
       return void 0;
     }
