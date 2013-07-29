@@ -11,12 +11,15 @@ describe 'Tana', ->
     MACD: (undefined for i in [1..17]).concat [0.02, 0.03, 0.04, 0.04, 0.05, 0.04, 0.03, 0.01, -0.02, -0.05, -0.06, -0.06, -0.04]
     OSC: (undefined for i in [1..17]).concat [0.12, 0.05, 0.02, 0.02, 0.00, -0.01, -0.04, -0.08, -0.13, -0.13, -0.04, 0.01, 0.09]
   KDJ9 = 
-    K: (undefined for i in [1..7]).concat [50.00, 43.89, 35.93, 27.84, 33.65, 30.30, 44.10, 30.03, 31.86, 54.57, 69.72, 60.20, 56.80, 60.53, 59.02, 58.02, 41.79, 27.86, 18.57, 12.73, 29.32, 40.38, 60.25]
-    D: (undefined for i in [1..7]).concat [50.00, 47.96, 43.95, 38.58, 36.94, 34.72, 37.85, 35.24, 34.11, 40.93, 50.53, 53.75, 54.77, 56.69, 57.47, 57.65, 52.36, 44.19, 35.65, 28.01, 28.45, 32.43, 41.70]
-    J: (undefined for i in [1..7]).concat [50.00, 56.11, 60.00, 60.06, 43.51, 43.58, 25.35, 45.67, 38.62, 13.66, 12.15, 40.85, 50.70, 49.00, 54.36, 56.92, 73.51, 76.87, 69.82, 58.58, 26.71, 16.52, 4.60]
+    K: (undefined for i in [1..12]).concat [26.44, 41.53, 28.31, 30.72, 53.81, 69.21, 59.86, 56.58, 60.38, 58.92, 57.95, 41.74, 27.83, 18.55, 12.72, 29.31, 40.37, 60.25]
+    D: (undefined for i in [1..16]).concat [36.16, 47.18, 51.41, 53.13, 55.55, 56.67, 57.10, 51.98, 43.93, 35.47, 27.89, 28.36, 32.36, 41.66]
+    J: (undefined for i in [1..16]).concat [0.86, 3.12, 34.49, 46.24, 45.87, 52.17, 55.40, 72.45, 76.13, 69.31, 58.23, 26.46, 16.35, 4.48]
   
   tana = new Tana DI
-  
+ 
+
+
+
 
   describe 'MA', ->
     it 'has method MA', ->
@@ -95,15 +98,15 @@ describe 'Tana', ->
       expect(tana.KDJ).toBeDefined()
 
     it 'has default value { period: 9 }', ->
-      expect(tana.KDJ()).toEqual tana.KDJ(9)
+      expect(tana.KDJ()).toEqual tana.KDJ period: 9
 
     it 'has correct answers', ->
-      expect(tana.KDJ(9)).toEqual KDJ9
+      expect(tana.KDJ period: 9).toEqual KDJ9
 
     it 'returns undefined when period is out of range', ->
-      expect(tana.KDJ(-1)).toBeUndefined()
-      expect(tana.KDJ(0)).toBeUndefined()
-      expect(tana.KDJ(100)).toBeUndefined()
+      expect(tana.KDJ period: -1).toBeUndefined()
+      expect(tana.KDJ period: 0).toBeUndefined()
+      expect(tana.KDJ period: 100).toBeUndefined()
 
 
 

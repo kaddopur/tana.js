@@ -86,7 +86,10 @@ class Tana
     {DIF:@util_round(dif), MACD:@util_round(macd), OSC:@util_round(osc)}
 
     
-  KDJ: (period=9) ->
+  KDJ: (argv) ->
+    argv = {period: 9} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 9
+
     return undefined unless 1 <= period <= @di.length
 
     high = for i in [0...@di.length]
@@ -108,11 +111,11 @@ class Tana
         undefined
 
     k = @util_ema
-      period: 3
+      period: 5
       target: rsv
 
     d = @util_ema
-      period: 3
+      period: 5
       target: k
 
     j = for i in [0...@di.length]
@@ -120,7 +123,7 @@ class Tana
         3 * d[i] - 2 * k[i]
       else
         undefined
-
+        
     {K: @util_round(k), D: @util_round(d), J: @util_round(j)}
 
 

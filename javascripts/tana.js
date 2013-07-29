@@ -159,12 +159,15 @@ Tana = (function() {
     };
   };
 
-  Tana.prototype.KDJ = function(period) {
-    var d, high, i, j, k, low, rsv;
+  Tana.prototype.KDJ = function(argv) {
+    var d, high, i, j, k, low, period, rsv;
 
-    if (period == null) {
-      period = 9;
+    if (argv === void 0) {
+      argv = {
+        period: 9
+      };
     }
+    period = argv.hasOwnProperty('period') ? argv.period : 9;
     if (!((1 <= period && period <= this.di.length))) {
       return void 0;
     }
@@ -212,11 +215,11 @@ Tana = (function() {
       return _results;
     }).call(this);
     k = this.util_ema({
-      period: 3,
+      period: 5,
       target: rsv
     });
     d = this.util_ema({
-      period: 3,
+      period: 5,
       target: k
     });
     j = (function() {
