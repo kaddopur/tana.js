@@ -175,15 +175,35 @@ describe('Tana', function() {
       return expect(tana.MACD).toBeDefined();
     });
     it('has default value { short: 12, long: 26, ema: 9 }', function() {
-      return expect(tana.MACD()).toEqual(tana.MACD(12, 26, 9));
+      return expect(tana.MACD()).toEqual(tana.MACD({
+        short: 12,
+        long: 26,
+        ema_period: 9
+      }));
     });
     it('has correct answers', function() {
-      return expect(tana.MACD(5, 10, 9)).toEqual(MACD5_10_9);
+      return expect(tana.MACD({
+        short: 5,
+        long: 10,
+        ema_period: 9
+      })).toEqual(MACD5_10_9);
     });
     return it('returns undefined when period is out of range', function() {
-      expect(tana.MACD(-5, 10, 9)).toBeUndefined();
-      expect(tana.MACD(5, -10, 9)).toBeUndefined();
-      return expect(tana.MACD(5, 10, -9)).toBeUndefined();
+      expect(tana.MACD({
+        short: -5,
+        long: 10,
+        ema_period: 9
+      })).toBeUndefined();
+      expect(tana.MACD({
+        short: 5,
+        long: -10,
+        ema_period: 9
+      })).toBeUndefined();
+      return expect(tana.MACD({
+        short: 5,
+        long: 10,
+        ema_period: -9
+      })).toBeUndefined();
     });
   });
   return describe('KDJ', function() {

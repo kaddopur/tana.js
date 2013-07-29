@@ -61,15 +61,33 @@ describe 'Tana', ->
       expect(tana.MACD).toBeDefined()
 
     it 'has default value { short: 12, long: 26, ema: 9 }', ->
-      expect(tana.MACD()).toEqual tana.MACD(12, 26, 9)
+      expect(tana.MACD()).toEqual tana.MACD
+        short:12
+        long: 26
+        ema_period: 9
 
     it 'has correct answers', ->
-      expect(tana.MACD(5, 10, 9)).toEqual MACD5_10_9
+      expect(tana.MACD
+        short: 5
+        long: 10
+        ema_period: 9
+      ).toEqual MACD5_10_9
 
     it 'returns undefined when period is out of range', ->
-      expect(tana.MACD(-5, 10, 9)).toBeUndefined()
-      expect(tana.MACD(5, -10, 9)).toBeUndefined()
-      expect(tana.MACD(5, 10, -9)).toBeUndefined()
+      expect(tana.MACD
+        short: -5
+        long: 10
+        ema_period: 9).toBeUndefined()
+      
+      expect(tana.MACD
+        short: 5
+        long: -10
+        ema_period: 9).toBeUndefined()
+
+      expect(tana.MACD
+        short: 5
+        long: 10
+        ema_period: -9).toBeUndefined()
 
 
   describe 'KDJ', ->

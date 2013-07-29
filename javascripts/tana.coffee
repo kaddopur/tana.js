@@ -47,7 +47,12 @@ class Tana
     if round then @util_round(ema) else ema
 
 
-  MACD: (short=12, long=26, ema_period=9) ->
+  MACD: (argv) ->
+    argv = {short:12, long:26, ema_period:9} if argv is undefined
+    short = if argv.hasOwnProperty('short') then argv.short else 12
+    long = if argv.hasOwnProperty('long') then argv.long else 26
+    ema_period = if argv.hasOwnProperty('ema_period') then argv.ema_period else 9
+
     return unless 1 <= Math.min(short, long, ema_period) and Math.max(short, long, ema_period) <= @di.length 
     ema_short = @util_ema 
       period: short

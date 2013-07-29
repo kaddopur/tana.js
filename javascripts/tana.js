@@ -97,18 +97,19 @@ Tana = (function() {
     }
   };
 
-  Tana.prototype.MACD = function(short, long, ema_period) {
-    var dif, ema_long, ema_short, i, macd, osc;
+  Tana.prototype.MACD = function(argv) {
+    var dif, ema_long, ema_period, ema_short, i, long, macd, osc, short;
 
-    if (short == null) {
-      short = 12;
+    if (argv === void 0) {
+      argv = {
+        short: 12,
+        long: 26,
+        ema_period: 9
+      };
     }
-    if (long == null) {
-      long = 26;
-    }
-    if (ema_period == null) {
-      ema_period = 9;
-    }
+    short = argv.hasOwnProperty('short') ? argv.short : 12;
+    long = argv.hasOwnProperty('long') ? argv.long : 26;
+    ema_period = argv.hasOwnProperty('ema_period') ? argv.ema_period : 9;
     if (!(1 <= Math.min(short, long, ema_period) && Math.max(short, long, ema_period) <= this.di.length)) {
       return;
     }
