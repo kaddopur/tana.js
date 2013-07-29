@@ -63,8 +63,23 @@ class Tana
     {DIF:@util_round(dif), MACD:@util_round(macd), OSC:@util_round(osc)}
 
     
+  KDJ: (period=9) ->
+    return undefined unless 1 <= period <= @di.length
 
+    high = for i in [0...@di.length]
+      if i < period-1
+        undefined 
+      else
+        @di.slice(i-period+1, i+1).reduce (a, b) -> Math.max a, b
 
-  
+    low = for i in [0...@di.length]
+      if i < period-1
+        undefined 
+      else
+        @di.slice(i-period+1, i+1).reduce (a, b) -> Math.min a, b
+
+    console.log high
+    console.log low
+
 
 
