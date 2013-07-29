@@ -6,10 +6,11 @@ class Tana
     list.map (x) -> Math.round(x * 100) / 100 if x?
 
 
-  util_ema: (period, list) ->
-    prefix = list.filter (x) -> not x?
-    target = list.filter (x) -> x?
-    prefix.concat @EMA(period, target, false)
+  util_ema: (argv) ->
+    prefix = argv.target.filter (x) -> not x?
+    argv.target = argv.target.filter (x) -> x?
+    argv.round = false
+    prefix.concat @EMA(argv)
 
 
   MA: (period=20, target=@di, round=true) ->
@@ -26,7 +27,12 @@ class Tana
     if round then @util_round(ma) else ma
     
 
-  EMA: (period=20, target=@di, round=true) ->
+  EMA: (argv) ->
+    argv = {period: 20, target: @di, round: true} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 20
+    target = if argv.hasOwnProperty('target') then argv.target else @di
+    round = if argv.hasOwnProperty('round') then argv.round else true
+
     return undefined unless 1 <= period <= target.length
     alpha = 2 / (period + 1)
 
@@ -43,8 +49,13 @@ class Tana
 
   MACD: (short=12, long=26, ema_period=9) ->
     return unless 1 <= Math.min(short, long, ema_period) and Math.max(short, long, ema_period) <= @di.length 
-    ema_short = @util_ema(short, @di)
-    ema_long = @util_ema(long, @di)
+    ema_short = @util_ema 
+      period: short
+      target: @di
+
+    ema_long = @util_ema
+      period: long
+      target: @di
 
     dif = for i in [0...ema_short.length]
       if ema_short[i] isnt undefined and ema_long[i] isnt undefined
@@ -52,7 +63,9 @@ class Tana
       else
         undefined
 
-    macd = @util_ema(ema_period, dif)
+    macd = @util_ema
+      period: ema_period
+      target: dif
     
     osc = for i in [0...ema_short.length]
       if dif[i] isnt undefined and macd[i] isnt undefined
@@ -78,8 +91,27 @@ class Tana
       else
         @di.slice(i-period+1, i+1).reduce (a, b) -> Math.min a, b
 
-    console.log high
-    console.log low
+    rsv = for i in [0...@di.length]
+      if high[i]? and low[i]?
+        (@di[i] - low[i]) / (high[i] - low[i]) * 100
+      else
+        undefined
+
+    k = @util_ema
+      period: 3
+      target: rsv
+
+    d = @util_ema
+      period: 3
+      target: k
+
+    j = for i in [0...@di.length]
+      if k[i]? and d[i]?
+        3 * d[i] - 2 * k[i]
+      else
+        undefined
+
+    {K: @util_round(k), D: @util_round(d), J: @util_round(j)}
 
 
 

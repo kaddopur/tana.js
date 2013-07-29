@@ -11,9 +11,9 @@ describe 'Tana', ->
     MACD: (undefined for i in [1..17]).concat [0.02, 0.03, 0.04, 0.04, 0.05, 0.04, 0.03, 0.01, -0.02, -0.05, -0.06, -0.06, -0.04]
     OSC: (undefined for i in [1..17]).concat [0.12, 0.05, 0.02, 0.02, 0.00, -0.01, -0.04, -0.08, -0.13, -0.13, -0.04, 0.01, 0.09]
   KDJ9 = 
-    K: (undefined for i in [1..7]).concat [50.00, 44.61, 36.86, 28.73, 33.60, 29.93, 42.83, 29.16, 27.79, 45.74, 61.31, 53.57, 50.85, 54.49, 53.28, 52.47, 37.15, 24.77, 16.51, 11.31, 25.73, 35.34, 55.92]
-    D: (undefined for i in [1..7]).concat [50.00, 48.20, 44.42, 39.19, 37.33, 34.86, 37.52, 34.73, 32.42, 36.86, 45.01, 47.86, 48.86, 50.73, 51.58, 51.88, 46.97, 39.57, 31.88, 25.03, 25.26, 28.62, 37.72]
-    J: (undefined for i in [1..7]).concat [50.00, 55.39, 59.54, 60.12, 44.78, 44.73, 26.89, 45.88, 41.67, 19.09, 12.41, 36.46, 44.88, 43.23, 48.19, 50.69, 66.60, 69.17, 62.63, 52.46, 24.33, 15.18, 1.31]
+    K: (undefined for i in [1..7]).concat [50.00, 43.89, 35.93, 27.84, 33.65, 30.30, 44.10, 30.03, 31.86, 54.57, 69.72, 60.20, 56.80, 60.53, 59.02, 58.02, 41.79, 27.86, 18.57, 12.73, 29.32, 40.38, 60.25]
+    D: (undefined for i in [1..7]).concat [50.00, 47.96, 43.95, 38.58, 36.94, 34.72, 37.85, 35.24, 34.11, 40.93, 50.53, 53.75, 54.77, 56.69, 57.47, 57.65, 52.36, 44.19, 35.65, 28.01, 28.45, 32.43, 41.70]
+    J: (undefined for i in [1..7]).concat [50.00, 56.11, 60.00, 60.06, 43.51, 43.58, 25.35, 45.67, 38.62, 13.66, 12.15, 40.85, 50.70, 49.00, 54.36, 56.92, 73.51, 76.87, 69.82, 58.58, 26.71, 16.52, 4.60]
   
   tana = new Tana DI
   
@@ -42,25 +42,25 @@ describe 'Tana', ->
       expect(tana.EMA).toBeDefined()
 
     it 'has default value { period: 20 }', ->
-      expect(tana.EMA()).toEqual tana.EMA(20)
+      expect(tana.EMA()).toEqual tana.EMA period: 20
 
     it 'answers with given period from 1 to LENGTH_OF_DI', ->
-      expect(tana.EMA(1)).toEqual DI
-      expect(tana.EMA(5)).toEqual EMA5
-      expect(tana.EMA(10)).toEqual EMA10
-      expect(tana.EMA(20)).toEqual EMA20
+      expect(tana.EMA period: 1).toEqual DI
+      expect(tana.EMA period: 5).toEqual EMA5
+      expect(tana.EMA period: 10).toEqual EMA10
+      expect(tana.EMA period: 20).toEqual EMA20
       
     it 'returns undefined when period is out of range', ->
-      expect(tana.EMA(-1)).toBeUndefined()
-      expect(tana.EMA(0)).toBeUndefined()
-      expect(tana.EMA(100)).toBeUndefined()
+      expect(tana.EMA period: -1).toBeUndefined()
+      expect(tana.EMA period: 0).toBeUndefined()
+      expect(tana.EMA period: 100).toBeUndefined()
 
 
   describe 'MACD', ->
     it 'has method MACD', ->
       expect(tana.MACD).toBeDefined()
 
-    it 'has default value { short: 12, long: 26, ema: 9}', ->
+    it 'has default value { short: 12, long: 26, ema: 9 }', ->
       expect(tana.MACD()).toEqual tana.MACD(12, 26, 9)
 
     it 'has correct answers', ->
@@ -76,7 +76,7 @@ describe 'Tana', ->
     it 'has method KDJ', ->
       expect(tana.KDJ).toBeDefined()
 
-    it 'has default value { period: 9}', ->
+    it 'has default value { period: 9 }', ->
       expect(tana.KDJ()).toEqual tana.KDJ(9)
 
     it 'has correct answers', ->
@@ -86,8 +86,6 @@ describe 'Tana', ->
       expect(tana.KDJ(-1)).toBeUndefined()
       expect(tana.KDJ(0)).toBeUndefined()
       expect(tana.KDJ(100)).toBeUndefined()
-
-
 
 
 

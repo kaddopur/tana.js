@@ -14,16 +14,17 @@ Tana = (function() {
     });
   };
 
-  Tana.prototype.util_ema = function(period, list) {
-    var prefix, target;
+  Tana.prototype.util_ema = function(argv) {
+    var prefix;
 
-    prefix = list.filter(function(x) {
+    prefix = argv.target.filter(function(x) {
       return x == null;
     });
-    target = list.filter(function(x) {
+    argv.target = argv.target.filter(function(x) {
       return x != null;
     });
-    return prefix.concat(this.EMA(period, target, false));
+    argv.round = false;
+    return prefix.concat(this.EMA(argv));
   };
 
   Tana.prototype.MA = function(period, target, round) {
@@ -60,18 +61,19 @@ Tana = (function() {
     }
   };
 
-  Tana.prototype.EMA = function(period, target, round) {
-    var alpha, current_ema, ema, i, sum, _i, _j, _ref;
+  Tana.prototype.EMA = function(argv) {
+    var alpha, current_ema, ema, i, period, round, sum, target, _i, _j, _ref;
 
-    if (period == null) {
-      period = 20;
+    if (argv === void 0) {
+      argv = {
+        period: 20,
+        target: this.di,
+        round: true
+      };
     }
-    if (target == null) {
-      target = this.di;
-    }
-    if (round == null) {
-      round = true;
-    }
+    period = argv.hasOwnProperty('period') ? argv.period : 20;
+    target = argv.hasOwnProperty('target') ? argv.target : this.di;
+    round = argv.hasOwnProperty('round') ? argv.round : true;
     if (!((1 <= period && period <= target.length))) {
       return void 0;
     }
@@ -110,8 +112,14 @@ Tana = (function() {
     if (!(1 <= Math.min(short, long, ema_period) && Math.max(short, long, ema_period) <= this.di.length)) {
       return;
     }
-    ema_short = this.util_ema(short, this.di);
-    ema_long = this.util_ema(long, this.di);
+    ema_short = this.util_ema({
+      period: short,
+      target: this.di
+    });
+    ema_long = this.util_ema({
+      period: long,
+      target: this.di
+    });
     dif = (function() {
       var _i, _ref, _results;
 
@@ -125,7 +133,10 @@ Tana = (function() {
       }
       return _results;
     })();
-    macd = this.util_ema(ema_period, dif);
+    macd = this.util_ema({
+      period: ema_period,
+      target: dif
+    });
     osc = (function() {
       var _i, _ref, _results;
 
@@ -147,7 +158,7 @@ Tana = (function() {
   };
 
   Tana.prototype.KDJ = function(period) {
-    var high, i, low;
+    var d, high, i, j, k, low, rsv;
 
     if (period == null) {
       period = 9;
@@ -185,8 +196,45 @@ Tana = (function() {
       }
       return _results;
     }).call(this);
-    console.log(high);
-    return console.log(low);
+    rsv = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if ((high[i] != null) && (low[i] != null)) {
+          _results.push((this.di[i] - low[i]) / (high[i] - low[i]) * 100);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).call(this);
+    k = this.util_ema({
+      period: 3,
+      target: rsv
+    });
+    d = this.util_ema({
+      period: 3,
+      target: k
+    });
+    j = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if ((k[i] != null) && (d[i] != null)) {
+          _results.push(3 * d[i] - 2 * k[i]);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).call(this);
+    return {
+      K: this.util_round(k),
+      D: this.util_round(d),
+      J: this.util_round(j)
+    };
   };
 
   return Tana;
