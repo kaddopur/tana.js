@@ -127,4 +127,40 @@ class Tana
     {K: @util_round(k), D: @util_round(d), J: @util_round(j)}
 
 
+  RSI: (argv) ->
+    argv = {period: 10} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 10
 
+    return undefined unless 1 <= period <= @di.length
+
+    u = for i in [0...@di.length]
+      if i is 0
+        undefined
+      else if @di[i] > @di[i-1]
+        @di[i] - @di[i-1]
+      else
+        0
+
+    d = for i in [0...@di.length]
+      if i is 0
+        undefined
+      else if @di[i] < @di[i-1]
+        @di[i-1] - @di[i]
+      else
+        0
+
+    ema_u = @util_ema
+      period: period
+      target: u
+
+    ema_d = @util_ema
+      period: period
+      target: d
+
+    rsi = for i in [0...@di.length]
+      if ema_u[i]? and ema_d[i]?
+        ema_u[i] / (ema_u[i] + ema_d[i]) * 100
+      else
+        undefined
+
+    @util_round(rsi)
