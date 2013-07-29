@@ -242,6 +242,72 @@ Tana = (function() {
     };
   };
 
+  Tana.prototype.RSI = function(argv) {
+    var d, ema_d, ema_u, i, period, rsi, u;
+
+    if (argv === void 0) {
+      argv = {
+        period: 10
+      };
+    }
+    period = argv.hasOwnProperty('period') ? argv.period : 10;
+    if (!((1 <= period && period <= this.di.length))) {
+      return void 0;
+    }
+    u = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (i === 0) {
+          _results.push(void 0);
+        } else if (this.di[i] > this.di[i - 1]) {
+          _results.push(this.di[i] - this.di[i - 1]);
+        } else {
+          _results.push(0);
+        }
+      }
+      return _results;
+    }).call(this);
+    d = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (i === 0) {
+          _results.push(void 0);
+        } else if (this.di[i] < this.di[i - 1]) {
+          _results.push(this.di[i - 1] - this.di[i]);
+        } else {
+          _results.push(0);
+        }
+      }
+      return _results;
+    }).call(this);
+    ema_u = this.util_ema({
+      period: period,
+      target: u
+    });
+    ema_d = this.util_ema({
+      period: period,
+      target: d
+    });
+    rsi = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if ((ema_u[i] != null) && (ema_d[i] != null)) {
+          _results.push(ema_u[i] / (ema_u[i] + ema_d[i]) * 100);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).call(this);
+    return this.util_round(rsi);
+  };
+
   return Tana;
 
 })();
