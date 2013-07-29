@@ -10,63 +10,103 @@ describe 'Tana', ->
     DIF: (undefined for i in [1..9]).concat [0.00, -0.05, 0.00, -0.01, 0.06, -0.01, -0.01, 0.08, 0.14, 0.08, 0.06, 0.07, 0.05, 0.04, -0.01, -0.07, -0.15, -0.19, -0.10, -0.05, 0.05]
     MACD: (undefined for i in [1..17]).concat [0.02, 0.03, 0.04, 0.04, 0.05, 0.04, 0.03, 0.01, -0.02, -0.05, -0.06, -0.06, -0.04]
     OSC: (undefined for i in [1..17]).concat [0.12, 0.05, 0.02, 0.02, 0.00, -0.01, -0.04, -0.08, -0.13, -0.13, -0.04, 0.01, 0.09]
+  KDJ9 = 
+    K: (undefined for i in [1..12]).concat [26.44, 41.53, 28.31, 30.72, 53.81, 69.21, 59.86, 56.58, 60.38, 58.92, 57.95, 41.74, 27.83, 18.55, 12.72, 29.31, 40.37, 60.25]
+    D: (undefined for i in [1..16]).concat [36.16, 47.18, 51.41, 53.13, 55.55, 56.67, 57.10, 51.98, 43.93, 35.47, 27.89, 28.36, 32.36, 41.66]
+    J: (undefined for i in [1..16]).concat [0.86, 3.12, 34.49, 46.24, 45.87, 52.17, 55.40, 72.45, 76.13, 69.31, 58.23, 26.46, 16.35, 4.48]
   
   tana = new Tana DI
+ 
+
+
 
 
   describe 'MA', ->
     it 'has method MA', ->
       expect(tana.MA).toBeDefined()
 
-    it 'has default value { peroid: 20 }', ->
-      expect(tana.MA()).toEqual tana.MA(20)
+    it 'has default value { period: 20 }', ->
+      expect(tana.MA()).toEqual tana.MA period: 20
 
-    it 'answers with given peroid from 1 to LENGTH_OF_DI', ->
-      expect(tana.MA(1)).toEqual DI
-      expect(tana.MA(5)).toEqual MA5
-      expect(tana.MA(10)).toEqual MA10
-      expect(tana.MA(20)).toEqual MA20
+    it 'answers with given period from 1 to LENGTH_OF_DI', ->
+      expect(tana.MA period: 1).toEqual DI
+      expect(tana.MA period: 5).toEqual MA5
+      expect(tana.MA period: 10).toEqual MA10
+      expect(tana.MA period: 20).toEqual MA20
 
-    it 'returns undefined when peroid is out of range', ->
-      expect(tana.MA(-1)).toBeUndefined()
-      expect(tana.MA(0)).toBeUndefined()
-      expect(tana.MA(100)).toBeUndefined()
+    it 'returns undefined when period is out of range', ->
+      expect(tana.MA period: -1).toBeUndefined()
+      expect(tana.MA period: 0).toBeUndefined()
+      expect(tana.MA period: 100).toBeUndefined()
 
 
   describe 'EMA', ->
     it 'has method EMA', ->
       expect(tana.EMA).toBeDefined()
 
-    it 'has default value { peroid: 20 }', ->
-      expect(tana.EMA()).toEqual tana.EMA(20)
+    it 'has default value { period: 20 }', ->
+      expect(tana.EMA()).toEqual tana.EMA period: 20
 
-    it 'answers with given peroid from 1 to LENGTH_OF_DI', ->
-      expect(tana.EMA(1)).toEqual DI
-      expect(tana.EMA(5)).toEqual EMA5
-      expect(tana.EMA(10)).toEqual EMA10
-      expect(tana.EMA(20)).toEqual EMA20
+    it 'answers with given period from 1 to LENGTH_OF_DI', ->
+      expect(tana.EMA period: 1).toEqual DI
+      expect(tana.EMA period: 5).toEqual EMA5
+      expect(tana.EMA period: 10).toEqual EMA10
+      expect(tana.EMA period: 20).toEqual EMA20
       
-    it 'returns undefined when peroid is out of range', ->
-      expect(tana.EMA(-1)).toBeUndefined()
-      expect(tana.EMA(0)).toBeUndefined()
-      expect(tana.EMA(100)).toBeUndefined()
+    it 'returns undefined when period is out of range', ->
+      expect(tana.EMA period: -1).toBeUndefined()
+      expect(tana.EMA period: 0).toBeUndefined()
+      expect(tana.EMA period: 100).toBeUndefined()
 
 
   describe 'MACD', ->
     it 'has method MACD', ->
       expect(tana.MACD).toBeDefined()
 
-    it 'has default value { short: 12, long: 26, ema: 9}', ->
-      expect(tana.MACD()).toEqual tana.MACD(12, 26, 9)
+    it 'has default value { short: 12, long: 26, ema: 9 }', ->
+      expect(tana.MACD()).toEqual tana.MACD
+        short:12
+        long: 26
+        ema_period: 9
 
     it 'has correct answers', ->
-      expect(tana.MACD(5, 10, 9)).toEqual MACD5_10_9
+      expect(tana.MACD
+        short: 5
+        long: 10
+        ema_period: 9
+      ).toEqual MACD5_10_9
 
-    it 'returns undefined when peroid is out of range', ->
-      expect(tana.MACD(-5, 10, 9)).toBeUndefined()
-      expect(tana.MACD(5, -10, 9)).toBeUndefined()
-      expect(tana.MACD(5, 10, -9)).toBeUndefined()
+    it 'returns undefined when period is out of range', ->
+      expect(tana.MACD
+        short: -5
+        long: 10
+        ema_period: 9).toBeUndefined()
+      
+      expect(tana.MACD
+        short: 5
+        long: -10
+        ema_period: 9).toBeUndefined()
+
+      expect(tana.MACD
+        short: 5
+        long: 10
+        ema_period: -9).toBeUndefined()
 
 
-  
+  describe 'KDJ', ->
+    it 'has method KDJ', ->
+      expect(tana.KDJ).toBeDefined()
+
+    it 'has default value { period: 9 }', ->
+      expect(tana.KDJ()).toEqual tana.KDJ period: 9
+
+    it 'has correct answers', ->
+      expect(tana.KDJ period: 9).toEqual KDJ9
+
+    it 'returns undefined when period is out of range', ->
+      expect(tana.KDJ period: -1).toBeUndefined()
+      expect(tana.KDJ period: 0).toBeUndefined()
+      expect(tana.KDJ period: 100).toBeUndefined()
+
+
 
