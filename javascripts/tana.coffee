@@ -191,3 +191,29 @@ class Tana
         undefined
 
     @util_round(wr)
+
+
+  BIAS: (argv) ->
+    argv = {period: 3} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 3
+
+    return undefined unless 1 <= period <= @di.length
+
+    ema = @util_ema
+      period: period
+      target: @di
+
+    bias = for i in [0...@di.length]
+      if @di[i]? and ema[i]?
+        (@di[i] - ema[i]) / ema[i] * 100
+      else 
+        undefined
+
+    @util_round(bias)
+
+
+
+
+
+
+

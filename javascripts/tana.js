@@ -366,6 +366,38 @@ Tana = (function() {
     return this.util_round(wr);
   };
 
+  Tana.prototype.BIAS = function(argv) {
+    var bias, ema, i, period;
+
+    if (argv === void 0) {
+      argv = {
+        period: 3
+      };
+    }
+    period = argv.hasOwnProperty('period') ? argv.period : 3;
+    if (!((1 <= period && period <= this.di.length))) {
+      return void 0;
+    }
+    ema = this.util_ema({
+      period: period,
+      target: this.di
+    });
+    bias = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if ((this.di[i] != null) && (ema[i] != null)) {
+          _results.push((this.di[i] - ema[i]) / ema[i] * 100);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).call(this);
+    return this.util_round(bias);
+  };
+
   return Tana;
 
 })();
