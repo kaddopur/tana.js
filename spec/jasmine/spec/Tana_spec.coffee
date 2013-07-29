@@ -109,4 +109,19 @@ describe 'Tana', ->
       expect(tana.KDJ period: 100).toBeUndefined()
 
 
+  describe 'RSI', ->
+    it 'has method RSI', ->
+      expect(tana.RSI).toBeDefined()
+
+    it 'has default value { period: 10 }', ->
+      expect(tana.RSI()).toEqual tana.RSI period: 10
+
+    it 'has correct answers', ->
+      expect(tana.RSI period: 10).toEqual RSI10
+
+    it 'returns undefined when period is out of range', ->
+      expect(tana.RSI period: -1).toBeUndefined()
+      expect(tana.RSI period: 0).toBeUndefined()
+      expect(tana.RSI period: 100).toBeUndefined() 
+
 

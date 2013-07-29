@@ -222,7 +222,7 @@ describe('Tana', function() {
       })).toBeUndefined();
     });
   });
-  return describe('KDJ', function() {
+  describe('KDJ', function() {
     it('has method KDJ', function() {
       return expect(tana.KDJ).toBeDefined();
     });
@@ -244,6 +244,32 @@ describe('Tana', function() {
         period: 0
       })).toBeUndefined();
       return expect(tana.KDJ({
+        period: 100
+      })).toBeUndefined();
+    });
+  });
+  return describe('RSI', function() {
+    it('has method RSI', function() {
+      return expect(tana.RSI).toBeDefined();
+    });
+    it('has default value { period: 10 }', function() {
+      return expect(tana.RSI()).toEqual(tana.RSI({
+        period: 10
+      }));
+    });
+    it('has correct answers', function() {
+      return expect(tana.RSI({
+        period: 10
+      })).toEqual(RSI10);
+    });
+    return it('returns undefined when period is out of range', function() {
+      expect(tana.RSI({
+        period: -1
+      })).toBeUndefined();
+      expect(tana.RSI({
+        period: 0
+      })).toBeUndefined();
+      return expect(tana.RSI({
         period: 100
       })).toBeUndefined();
     });
