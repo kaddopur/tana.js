@@ -16,8 +16,7 @@ describe 'Tana', ->
     J: (undefined for i in [1..16]).concat [0.86, 3.12, 34.49, 46.24, 45.87, 52.17, 55.40, 72.45, 76.13, 69.31, 58.23, 26.46, 16.35, 4.48]
   RSI10 = (undefined for i in [1..10]).concat [46.90, 59.61, 52.28, 64.21, 44.49, 50.74, 63.27, 65.51, 48.70, 51.25, 56.05, 51.89, 51.89, 42.46, 34.48, 26.10, 26.72, 54.41, 54.41, 68.76]
   WR9 = (undefined for i in [1..8]).concat [68.33, 80.00, 88.33, 54.72, 76.42, 28.30, 98.11, 64.47, 0.00, 0.00, 58.82, 50.00, 32.00, 44.00, 44.00, 90.67, 100.00, 100.00, 98.96, 37.50, 37.50, 0.00]
-
-
+  BIAS5 = (undefined for i in [1..4]).concat [-0.96, 3.68, 4.70, -0.57, -1.94, -2.22, -2.16, 1.72, -0.36, 3.06, -2.78, -0.22, 3.84, 3.34, -1.58, -0.42, 0.87, -0.18, -0.12, -1.62, -2.72, -4.18, -2.76, 2.11, 1.40, 4.02]
 
 
 
@@ -143,5 +142,21 @@ describe 'Tana', ->
     it 'returns undefined when period is out of range', ->
       expect(tana.WR period: -1).toBeUndefined()
       expect(tana.WR period: 0).toBeUndefined()
-      expect(tana.WR period: 100).toBeUndefined() 
+      expect(tana.WR period: 100).toBeUndefined()
+
+
+  describe 'BIAS', ->
+    it 'has method BIAS', ->
+      expect(tana.BIAS).toBeDefined()
+
+    it 'has default value { period: 3 }', ->
+      expect(tana.BIAS()).toEqual tana.BIAS period: 3
+
+    it 'has correct answers', ->
+      expect(tana.BIAS period: 5).toEqual BIAS5
+
+    it 'returns undefined when period is out of range', ->
+      expect(tana.BIAS period: -1).toBeUndefined()
+      expect(tana.BIAS period: 0).toBeUndefined()
+      expect(tana.BIAS period: 100).toBeUndefined()  
 
