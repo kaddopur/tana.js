@@ -308,6 +308,64 @@ Tana = (function() {
     return this.util_round(rsi);
   };
 
+  Tana.prototype.WR = function(argv) {
+    var high, i, low, period, wr;
+
+    if (argv === void 0) {
+      argv = {
+        period: 14
+      };
+    }
+    period = argv.hasOwnProperty('period') ? argv.period : 14;
+    if (!((1 <= period && period <= this.di.length))) {
+      return void 0;
+    }
+    high = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (i < period - 1) {
+          _results.push(void 0);
+        } else {
+          _results.push(this.di.slice(i - period + 1, i + 1).reduce(function(a, b) {
+            return Math.max(a, b);
+          }));
+        }
+      }
+      return _results;
+    }).call(this);
+    low = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (i < period - 1) {
+          _results.push(void 0);
+        } else {
+          _results.push(this.di.slice(i - period + 1, i + 1).reduce(function(a, b) {
+            return Math.min(a, b);
+          }));
+        }
+      }
+      return _results;
+    }).call(this);
+    wr = (function() {
+      var _i, _ref, _results;
+
+      _results = [];
+      for (i = _i = 0, _ref = this.di.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if ((high[i] != null) && (low[i] != null)) {
+          _results.push((high[i] - this.di[i]) / (high[i] - low[i]) * 100);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    }).call(this);
+    return this.util_round(wr);
+  };
+
   return Tana;
 
 })();

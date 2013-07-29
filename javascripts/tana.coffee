@@ -164,3 +164,30 @@ class Tana
         undefined
 
     @util_round(rsi)
+
+
+  WR: (argv) ->
+    argv = {period: 14} if argv is undefined
+    period = if argv.hasOwnProperty('period') then argv.period else 14
+
+    return undefined unless 1 <= period <= @di.length
+
+    high = for i in [0...@di.length]
+      if i < period-1
+        undefined 
+      else
+        @di.slice(i-period+1, i+1).reduce (a, b) -> Math.max a, b
+
+    low = for i in [0...@di.length]
+      if i < period-1
+        undefined 
+      else
+        @di.slice(i-period+1, i+1).reduce (a, b) -> Math.min a, b
+
+    wr = for i in [0...@di.length]
+      if high[i]? and low[i]?
+        (high[i] - @di[i]) / (high[i] - low[i]) * 100
+      else
+        undefined
+
+    @util_round(wr)

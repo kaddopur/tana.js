@@ -15,7 +15,12 @@ describe 'Tana', ->
     D: (undefined for i in [1..16]).concat [36.16, 47.18, 51.41, 53.13, 55.55, 56.67, 57.10, 51.98, 43.93, 35.47, 27.89, 28.36, 32.36, 41.66]
     J: (undefined for i in [1..16]).concat [0.86, 3.12, 34.49, 46.24, 45.87, 52.17, 55.40, 72.45, 76.13, 69.31, 58.23, 26.46, 16.35, 4.48]
   RSI10 = (undefined for i in [1..10]).concat [46.90, 59.61, 52.28, 64.21, 44.49, 50.74, 63.27, 65.51, 48.70, 51.25, 56.05, 51.89, 51.89, 42.46, 34.48, 26.10, 26.72, 54.41, 54.41, 68.76]
-  
+  WR9 = (undefined for i in [1..8]).concat [68.33, 80.00, 88.33, 54.72, 76.42, 28.30, 98.11, 64.47, 0.00, 0.00, 58.82, 50.00, 32.00, 44.00, 44.00, 90.67, 100.00, 100.00, 98.96, 37.50, 37.50, 0.00]
+
+
+
+
+
   tana = new Tana DI
  
 
@@ -124,4 +129,19 @@ describe 'Tana', ->
       expect(tana.RSI period: 0).toBeUndefined()
       expect(tana.RSI period: 100).toBeUndefined() 
 
+
+  describe 'W%R', ->
+    it 'has method W%R', ->
+      expect(tana.WR).toBeDefined()
+
+    it 'has default value { period: 14 }', ->
+      expect(tana.WR()).toEqual tana.WR period: 14
+
+    it 'has correct answers', ->
+      expect(tana.WR period: 9).toEqual WR9
+
+    it 'returns undefined when period is out of range', ->
+      expect(tana.WR period: -1).toBeUndefined()
+      expect(tana.WR period: 0).toBeUndefined()
+      expect(tana.WR period: 100).toBeUndefined() 
 
