@@ -6,8 +6,13 @@ describe 'Tana', ->
   EMA5 = (undefined for i in [1..4]).concat [10.02, 10.20, 10.45, 10.42, 10.32, 10.21, 10.10, 10.19, 10.17, 10.32, 10.18, 10.17, 10.37, 10.55, 10.47, 10.44, 10.49, 10.48, 10.47, 10.39, 10.25, 10.04, 9.90, 10.01, 10.08, 10.29]
   EMA10 = (undefined for i in [1..9]).concat [10.21, 10.15, 10.19, 10.18, 10.26, 10.19, 10.19, 10.29, 10.40, 10.38, 10.39, 10.42, 10.43, 10.43, 10.40, 10.32, 10.19, 10.09, 10.11, 10.13, 10.24]
   EMA20 = (undefined for i in [1..19]).concat [10.27, 10.30, 10.32, 10.33, 10.32, 10.29, 10.22, 10.17, 10.17, 10.18, 10.23]
-
+  MACD5_10_9 = 
+    DIF: (undefined for i in [1..9]).concat [0.00, -0.05, 0.00, -0.01, 0.06, -0.01, -0.01, 0.08, 0.14, 0.08, 0.06, 0.07, 0.05, 0.04, -0.01, -0.07, -0.15, -0.19, -0.10, -0.05, 0.05]
+    MACD: (undefined for i in [1..17]).concat [0.02, 0.03, 0.04, 0.04, 0.05, 0.04, 0.03, 0.01, -0.02, -0.05, -0.06, -0.06, -0.04]
+    OSC: (undefined for i in [1..17]).concat [0.12, 0.05, 0.02, 0.02, 0.00, -0.01, -0.04, -0.08, -0.13, -0.13, -0.04, 0.01, 0.09]
+  
   tana = new Tana DI
+
 
   describe 'MA', ->
     it 'has method MA', ->
@@ -41,7 +46,6 @@ describe 'Tana', ->
       expect(tana.EMA(10)).toEqual EMA10
       expect(tana.EMA(20)).toEqual EMA20
       
-
     it 'returns undefined when peroid is out of range', ->
       expect(tana.EMA(-1)).toBeUndefined()
       expect(tana.EMA(0)).toBeUndefined()
@@ -54,6 +58,15 @@ describe 'Tana', ->
 
     it 'has default value { short: 12, long: 26, ema: 9}', ->
       expect(tana.MACD()).toEqual tana.MACD(12, 26, 9)
+
+    it 'has correct answers', ->
+      expect(tana.MACD(5, 10, 9)).toEqual MACD5_10_9
+
+    it 'returns undefined when peroid is out of range', ->
+      expect(tana.MACD(-5, 10, 9)).toBeUndefined()
+      expect(tana.MACD(5, -10, 9)).toBeUndefined()
+      expect(tana.MACD(5, 10, -9)).toBeUndefined()
+
 
   
 

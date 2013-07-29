@@ -1,11 +1,18 @@
 class Tana
   constructor: (@di) ->
 
-  @roundArray: (list) ->
+
+  util_round: (list) ->
     list.map (x) -> Math.round(x * 100) / 100 if x?
 
 
-  MA: (period=20, target=@di) ->
+  util_ema: (period, list) ->
+    prefix = list.filter (x) -> not x?
+    target = list.filter (x) -> x?
+    prefix.concat @EMA(period, target, false)
+
+
+  MA: (period=20, target=@di, round=true) ->
     return undefined unless 1 <= period <= target.length
       
     ma = []
@@ -16,10 +23,10 @@ class Tana
     ma.push current_ma
     
     ma.push current_ma += (target[i] - target[i-period]) / period for i in [period...target.length]
-    Tana.roundArray(ma)
+    if round then @util_round(ma) else ma
     
 
-  EMA: (period=20, target=@di) ->
+  EMA: (period=20, target=@di, round=true) ->
     return undefined unless 1 <= period <= target.length
     alpha = 2 / (period + 1)
 
@@ -31,11 +38,32 @@ class Tana
     ema.push current_ema
 
     ema.push current_ema = ema[i-1] + alpha * (target[i] - ema[i-1]) for i in [period...target.length]
-    Tana.roundArray(ema)
+    if round then @util_round(ema) else ema
 
 
-  MACD: (period=20) ->
-    undefined
+  MACD: (short=12, long=26, ema_period=9) ->
+    return unless 1 <= Math.min(short, long, ema_period) and Math.max(short, long, ema_period) <= @di.length 
+    ema_short = @util_ema(short, @di)
+    ema_long = @util_ema(long, @di)
+
+    dif = for i in [0...ema_short.length]
+      if ema_short[i] isnt undefined and ema_long[i] isnt undefined
+        ema_short[i] - ema_long[i]
+      else
+        undefined
+
+    macd = @util_ema(ema_period, dif)
+    
+    osc = for i in [0...ema_short.length]
+      if dif[i] isnt undefined and macd[i] isnt undefined
+        dif[i] - macd[i]
+      else
+        undefined 
+
+    {DIF:@util_round(dif), MACD:@util_round(macd), OSC:@util_round(osc)}
+
+    
+
 
   
 
